@@ -1,0 +1,5 @@
+<resources>
+
+    <dimen name="alert_dialog_title_height">48dip</dimen>
+
+</resources>
