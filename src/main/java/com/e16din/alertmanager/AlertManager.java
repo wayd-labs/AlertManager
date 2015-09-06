@@ -18,8 +18,12 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AlertManager {
+
+    private AlertManager() {
+    }
 
     private static final int INVALID_VALUE = -100500;
     public static final int MILLISECONDS_IN_THE_DAY = 86400;
@@ -74,16 +78,46 @@ public class AlertManager {
         this.context = context;
     }
 
-    public void showAlert(String message, boolean isCancelable) {
-        showAlert(message, customAlertTitle, isCancelable, null);
-    }
-
     public void showErrorAlert(String message, boolean isCancelable) {
         showAlert(message, customErrorTitle, isCancelable, null);
     }
 
-    public void showErrorAlert(String message, boolean isCancelable, DialogInterface.OnClickListener listener) {
+    public void showErrorAlert(int message, boolean isCancelable) {
+        showAlert(message, customErrorTitle, isCancelable, null);
+    }
+
+    public void showErrorAlert(String message, boolean isCancelable,
+                               final DialogInterface.OnClickListener listener) {
         showAlert(message, customErrorTitle, isCancelable, listener);
+    }
+
+    public void showErrorAlert(int message, boolean isCancelable,
+                               final DialogInterface.OnClickListener listener) {
+        showAlert(message, customErrorTitle, isCancelable, listener);
+    }
+
+    public void showErrorAlert(String message) {
+        showAlert(message, customErrorTitle, false, null);
+    }
+
+    public void showErrorAlert(int message) {
+        showAlert(message, customErrorTitle, false, null);
+    }
+
+    public void showErrorAlert(String message, final DialogInterface.OnClickListener listener) {
+        showAlert(message, customErrorTitle, false, listener);
+    }
+
+    public void showErrorAlert(int message, final DialogInterface.OnClickListener listener) {
+        showAlert(message, customErrorTitle, false, listener);
+    }
+
+    public void showAlert(String message, boolean isCancelable) {
+        showAlert(message, customAlertTitle, isCancelable, null);
+    }
+
+    public void showAlert(int message, boolean isCancelable) {
+        showAlert(message, customAlertTitle, isCancelable, null);
     }
 
     public void showAlert(String message) {
@@ -94,21 +128,14 @@ public class AlertManager {
         showAlert(message, customAlertTitle, false, null);
     }
 
-    public void showAlert(String message, DialogInterface.OnClickListener listener) {
+    public void showAlert(String message, final DialogInterface.OnClickListener listener) {
         showAlert(message, customAlertTitle, false, listener);
     }
 
-    public void showAlert(int message, DialogInterface.OnClickListener listener) {
+    public void showAlert(int message, final DialogInterface.OnClickListener listener) {
         showAlert(message, customAlertTitle, false, listener);
     }
 
-    public void showErrorAlert(String message) {
-        showAlert(message, customErrorTitle, false, null);
-    }
-
-    public void showErrorAlert(String message, DialogInterface.OnClickListener listener) {
-        showAlert(message, customErrorTitle, false, listener);
-    }
 
     public void showAlert(final String message, final int title, final boolean isCancelable,
                           final DialogInterface.OnClickListener listener) {
@@ -157,7 +184,8 @@ public class AlertManager {
         showAlert(context.getString(message), title, isCancelable, listener);
     }
 
-    public void showAlert(final String message, boolean isCancelable, final DialogInterface.OnClickListener listener) {
+    public void showAlert(final String message, boolean isCancelable,
+                          final DialogInterface.OnClickListener listener) {
         try {
             AlertDialogWrapper.Builder builder = createAlertBuilder();
             builder.setTitle(context.getString(customAlertTitle) + " " + customPostfix).setMessage(message)
@@ -263,11 +291,13 @@ public class AlertManager {
     }
 
 
-    public void showDialogList(final CharSequence[] items, final TextView tv, DialogInterface.OnClickListener listener) {
+    public void showDialogList(final CharSequence[] items, final TextView tv,
+                               final DialogInterface.OnClickListener listener) {
         showDialogList(context.getString(customAlertTitle) + " " + customPostfix, items, tv, listener);
     }
 
-    public void showTimePicker(int hours, int minutes, final TimePickerDialog.OnTimeSetListener onTimeSetListener) {
+    public void showTimePicker(int hours, int minutes,
+                               final TimePickerDialog.OnTimeSetListener onTimeSetListener) {
         final TimePicker timePicker = new TimePicker(context);
         timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(hours);
@@ -278,7 +308,8 @@ public class AlertManager {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        onTimeSetListener.onTimeSet(timePicker, timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+                        onTimeSetListener.onTimeSet(timePicker, timePicker.getCurrentHour(),
+                                timePicker.getCurrentMinute());
                     }
                 }).setView(timePicker).show();
     }
@@ -287,10 +318,22 @@ public class AlertManager {
         showDatePicker(-1, -1, -1, onDateSetListener);
     }
 
-    public void showDatePicker(final int year, final int month, final int day, final DatePickerDialog.OnDateSetListener onDateSetListener) {
+    public void showCalendarPicker(final MaterialDialog.ButtonCallback callback) {
+        new MaterialDialog.Builder(context)
+                .customView(R.layout.dialog_calendar, false)
+                .positiveText("Ok")
+                .negativeText("Отмена")
+                .callback(callback).show();
+    }
+
+    public void showDatePicker(final int year, final int month, final int day, long maxDate,
+                               final DatePickerDialog.OnDateSetListener onDateSetListener) {
         final DatePicker datePicker = new DatePicker(context);
         datePicker.updateDate(year, month - 1, day);
         datePicker.setCalendarViewShown(false);
+        if (maxDate > 0)
+            datePicker.setMaxDate(maxDate);
+
         final AlertDialogWrapper.Builder builder = createAlertBuilder();
         builder.setTitle(context.getString(R.string.check_date))
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -311,11 +354,13 @@ public class AlertManager {
                 .setView(datePicker).show();
     }
 
-    public void showCalendarPicker(final MaterialDialog.ButtonCallback callback) {
-        new MaterialDialog.Builder(context)
-                .customView(R.layout.dialog_calendar, false)
-                .positiveText("Ok")
-                .negativeText("Отмена")
-                .callback(callback).show();
+    public void showDatePicker(final int year, final int month, final int day,
+                               final DatePickerDialog.OnDateSetListener onDateSetListener) {
+        showDatePicker(year, month, day, 0, onDateSetListener);
+    }
+
+    public void showBirthDatePicker(final int year, final int month, final int day,
+                                    final DatePickerDialog.OnDateSetListener onDateSetListener) {
+        showDatePicker(year, month, day, new Date().getTime(), onDateSetListener);
     }
 }
