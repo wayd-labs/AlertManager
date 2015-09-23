@@ -1,9 +1,11 @@
 package com.e16din.alertmanager;
 
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -345,6 +347,7 @@ public class AlertManager {
                 .setView(timePicker).show();
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void showDatePicker(final String title, final int year, final int month, final int day,
                                long maxDate,
                                final DatePickerDialog.OnDateSetListener onDateSetListener) {
