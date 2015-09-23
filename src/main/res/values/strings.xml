@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="title_alert">Title</string>
+    <string name="title_alert"></string>
     <string name="title_error">Ошибка</string>
     <string name="set_time">Задать время</string>
     <string name="check_date">Выбрать дату</string>

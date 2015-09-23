@@ -33,3 +33,8 @@ AlertManager.manager(context).showAlert(
                                             }
                                         });
 ```
+
+## Override title of alert dialog
+```xml
+<string name="title_alert"></string>
+```
