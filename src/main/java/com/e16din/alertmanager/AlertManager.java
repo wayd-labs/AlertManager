@@ -435,14 +435,24 @@ public class AlertManager {
     }
 
     public void showMessageEditor(String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, message, callback);
+        showMessageEditor(null, message, -1, callback);
     }
 
-    public void showMessageEditor(String title, String message,
+    public void showMessageEditor(String message, int inputType, final AlertDialogCallback<String> callback) {
+        showMessageEditor(null, message, inputType, callback);
+    }
+
+    public void showMessageEditor(String title, String message, final AlertDialogCallback<String> callback) {
+        showMessageEditor(title, message, -1, callback);
+    }
+
+    public void showMessageEditor(String title, String message, int inputType,
                                   final AlertDialogCallback<String> callback) {
         final View customView = LayoutInflater.from(context).inflate(R.layout.dialog_edit_message,
                 null);
         final EditText etMessage = (EditText) customView.findViewById(R.id.etMessage);
+        if (inputType >= 0)
+            etMessage.setInputType(inputType);
         etMessage.setText(message);
         etMessage.setSelection(etMessage.length());
 
