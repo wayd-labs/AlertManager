@@ -437,36 +437,46 @@ public class AlertManager {
     }
 
     public void showMessageEditor(String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, null, message, -1, false, callback);
+        showMessageEditor(context.getString(customAlertTitle), null, message, -1, false, callback);
     }
 
     public void showMessageEditor(String message, int inputType, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, null, message, inputType, false, callback);
+        showMessageEditor(context.getString(customAlertTitle), null, message, inputType, false, callback);
     }
 
     public void showMessageEditor(String hint, String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, hint, message, -1, false, callback);
+        showMessageEditor(context.getString(customAlertTitle), hint, message, -1, false, callback);
     }
 
     public void showSingleLineMessageEditor(String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, null, message, -1, true, callback);
+        showMessageEditor(context.getString(customAlertTitle), null, message, -1, true, callback);
     }
 
     public void showSingleLineMessageEditor(String message, int inputType, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, null, message, inputType, true, callback);
+        showMessageEditor(context.getString(customAlertTitle), null, message, inputType, true, callback);
     }
 
     public void showSingleLineMessageEditor(String hint, String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, hint, message, -1, true, callback);
+        showMessageEditor(context.getString(customAlertTitle), hint, message, -1, true, callback);
     }
 
     public void showTextPasswordEditor(String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, context.getString(R.string.enter_password), message,
+        showMessageEditor(context.getString(customAlertTitle), context.getString(R.string.enter_password), message,
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, true, callback);
+    }
+
+    public void showTextPasswordEditor(String message, String hint, final AlertDialogCallback<String> callback) {
+        showMessageEditor(context.getString(customAlertTitle), hint, message,
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, true, callback);
     }
 
     public void showNumberPasswordEditor(String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, context.getString(R.string.enter_password), message,
+        showMessageEditor(context.getString(customAlertTitle), context.getString(R.string.enter_password), message,
+                InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD, true, callback);
+    }
+
+    public void showNumberPasswordEditor(String message, String hint, final AlertDialogCallback<String> callback) {
+        showMessageEditor(context.getString(customAlertTitle), hint, message,
                 InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD, true, callback);
     }
 
