@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Handler;
+import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -435,26 +437,61 @@ public class AlertManager {
     }
 
     public void showMessageEditor(String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, message, -1, callback);
+        showMessageEditor(null, null, message, -1, false, callback);
     }
 
     public void showMessageEditor(String message, int inputType, final AlertDialogCallback<String> callback) {
-        showMessageEditor(null, message, inputType, callback);
+        showMessageEditor(null, null, message, inputType, false, callback);
     }
 
-    public void showMessageEditor(String title, String message, final AlertDialogCallback<String> callback) {
-        showMessageEditor(title, message, -1, callback);
+    public void showMessageEditor(String hint, String message, final AlertDialogCallback<String> callback) {
+        showMessageEditor(null, hint, message, -1, false, callback);
     }
 
-    public void showMessageEditor(String title, String message, int inputType,
+    public void showSingleLineMessageEditor(String message, final AlertDialogCallback<String> callback) {
+        showMessageEditor(null, null, message, -1, true, callback);
+    }
+
+    public void showSingleLineMessageEditor(String message, int inputType, final AlertDialogCallback<String> callback) {
+        showMessageEditor(null, null, message, inputType, true, callback);
+    }
+
+    public void showSingleLineMessageEditor(String hint, String message, final AlertDialogCallback<String> callback) {
+        showMessageEditor(null, hint, message, -1, true, callback);
+    }
+
+    public void showTextPasswordEditor(String message, final AlertDialogCallback<String> callback) {
+        showMessageEditor(null, context.getString(R.string.enter_password), message,
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, true, callback);
+    }
+
+    public void showNumberPasswordEditor(String message, final AlertDialogCallback<String> callback) {
+        showMessageEditor(null, context.getString(R.string.enter_password), message,
+                InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD, true, callback);
+    }
+
+    //TODO: create Builder: setTitle, setMessage, setListener
+
+    public void showMessageEditor(String title, String hint, String message, int inputType, boolean singleLine,
                                   final AlertDialogCallback<String> callback) {
         final View customView = LayoutInflater.from(context).inflate(R.layout.dialog_edit_message,
                 null);
+
+        final TextInputLayout tilMessage = (TextInputLayout) customView.findViewById(R.id.tilMessage);
         final EditText etMessage = (EditText) customView.findViewById(R.id.etMessage);
-        if (inputType >= 0)
-            etMessage.setInputType(inputType);
+
+        etMessage.setHint(hint);
         etMessage.setText(message);
         etMessage.setSelection(etMessage.length());
+
+        tilMessage.setHint(hint);
+
+        if (inputType >= 0)
+            etMessage.setInputType(inputType);
+
+        if (singleLine)
+            etMessage.setSingleLine();
+
 
         new MaterialDialog.Builder(context)
                 .title(title)
