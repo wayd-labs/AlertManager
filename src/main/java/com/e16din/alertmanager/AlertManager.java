@@ -490,7 +490,7 @@ public class AlertManager {
         final TextInputLayout tilMessage = (TextInputLayout) customView.findViewById(R.id.tilMessage);
         final EditText etMessage = (EditText) customView.findViewById(R.id.etMessage);
 
-        etMessage.setHint(hint);
+        //etMessage.setHint(hint);
         etMessage.setText(message);
         etMessage.setSelection(etMessage.length());
 
