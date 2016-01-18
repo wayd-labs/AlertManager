@@ -137,23 +137,24 @@ public class AlertManager {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    displayedAlerts.remove(message);
                                     if (listener != null)
                                         listener.onClick(dialog, which);
 
-                                    displayedAlerts.remove(message);
                                 }
                             }).setCancelable(isCancelable).setOnKeyListener(
                             new DialogInterface.OnKeyListener() {
                                 @Override
                                 public boolean onKey(DialogInterface dialog, int keyCode,
                                                      KeyEvent event) {
+                                    displayedAlerts.remove(message);
                                     if (keyCode == KeyEvent.KEYCODE_BACK ||
                                             event.getAction() == KeyEvent.ACTION_UP) {
                                         if (listener != null)
                                             listener.onClick(dialog, INVALID_VALUE);
                                     }
 
-                                    displayedAlerts.remove(message);
+
                                     return false;
                                 }
                             }).show();
@@ -184,9 +185,9 @@ public class AlertManager {
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            displayedAlerts.remove(message);
                             if (listener != null)
                                 listener.onClick(dialog, which);
-                            displayedAlerts.remove(message);
                         }
                     }).setCancelable(isCancelable).setOnKeyListener(
                     new DialogInterface.OnKeyListener() {
@@ -195,9 +196,9 @@ public class AlertManager {
                         public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                             if (keyCode == KeyEvent.KEYCODE_BACK ||
                                     event.getAction() == KeyEvent.ACTION_UP) {
+                                displayedAlerts.remove(message);
                                 if (listener != null)
                                     listener.onClick(dialog, INVALID_VALUE);
-                                displayedAlerts.remove(message);
                             }
 
                             return false;
@@ -223,9 +224,8 @@ public class AlertManager {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            yesListener.onClick(dialog, which);
-
                             displayedAlerts.remove(message);
+                            yesListener.onClick(dialog, which);
                         }
                     }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                 @Override
@@ -252,10 +252,10 @@ public class AlertManager {
                 public void onClick(DialogInterface dialog, int which) {
                     if (tv != null && which >= 0)
                         tv.setText(items[which]);
-                    if (listener != null)
-                        listener.onClick(dialog, which);
 
                     displayedAlerts.remove(title);
+                    if (listener != null)
+                        listener.onClick(dialog, which);
                 }
             }).show();
             displayedAlerts.add(title);
