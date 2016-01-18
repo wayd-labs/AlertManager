@@ -12,4 +12,7 @@ public abstract class AlertDialogCallback<T> {
 
     public void onNeutral(T... data) {
     }
+
+    public void onPick(T... data) {
+    }
 }

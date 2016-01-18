@@ -1,12 +1,13 @@
 package com.e16din.alertmanager;
 
 import android.annotation.TargetApi;
-import android.app.DatePickerDialog;
+import android.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -15,19 +16,22 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AlertManager {
+
+    public static final String TAG_CALENDAR_DIALOG = "CalendarDialog";
 
     private AlertManager() {
     }
@@ -39,7 +43,7 @@ public class AlertManager {
         public static final AlertManager HOLDER_INSTANCE = new AlertManager();
     }
 
-    public static AlertManager manager(Context context) {
+    public static AlertManager manager(@NonNull Context context) {
         Holder.HOLDER_INSTANCE.setContext(context);
         return Holder.HOLDER_INSTANCE;
     }
@@ -50,7 +54,7 @@ public class AlertManager {
     private Context context = null;
     private ArrayList<String> displayedAlerts = new ArrayList<>();
 
-    private void setContext(Context context) {
+    private void setContext(@NonNull Context context) {
         this.context = context;
     }
 
@@ -206,7 +210,7 @@ public class AlertManager {
     }
 
     public void showAlertYesNo(final String message,
-                               final DialogInterface.OnClickListener yesListener) {
+                               @NonNull final DialogInterface.OnClickListener yesListener) {
         try {
             AlertDialogWrapper.Builder builder = createAlertBuilder();
 
@@ -219,12 +223,16 @@ public class AlertManager {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (yesListener != null)
-                                yesListener.onClick(dialog, which);
+                            yesListener.onClick(dialog, which);
 
                             displayedAlerts.remove(message);
                         }
-                    }).setNegativeButton(android.R.string.no, null).show();
+                    }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    displayedAlerts.remove(message);
+                }
+            }).show();
             displayedAlerts.add(message);
         } catch (WindowManager.BadTokenException e) {
             Log.e("debug", "error: ", e);
@@ -352,8 +360,8 @@ public class AlertManager {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void showDatePicker(final String title, final int year, final int month, final int day,
                                long maxDate,
-                               final DatePickerDialog.OnDateSetListener onDateSetListener) {
-        final DatePicker datePicker = new DatePicker(context);
+                               final android.app.DatePickerDialog.OnDateSetListener onDateSetListener) {
+        final android.widget.DatePicker datePicker = new android.widget.DatePicker(context);
         datePicker.updateDate(year, month - 1, day);
         datePicker.setCalendarViewShown(false);
         if (maxDate > 0)
@@ -383,57 +391,54 @@ public class AlertManager {
     }
 
     public void showDatePicker(final String title, final int year, final int month, final int day,
-                               final DatePickerDialog.OnDateSetListener onDateSetListener) {
+                               final android.app.DatePickerDialog.OnDateSetListener onDateSetListener) {
         showDatePicker(title, year, month, day, DateTime.now().plusYears(1).getMillis(),
                 onDateSetListener);
     }
 
-    public void showBirthDatePicker(final String title, final int year, final int month,
-                                    final int day,
-                                    final DatePickerDialog.OnDateSetListener onDateSetListener) {
-        showDatePicker(title, year, month, day, DateTime.now().getMillis(), onDateSetListener);
-    }
-
     public void showDatePicker(final int year, final int month, final int day,
-                               final DatePickerDialog.OnDateSetListener onDateSetListener) {
+                               final android.app.DatePickerDialog.OnDateSetListener onDateSetListener) {
         showDatePicker(context.getString(R.string.check_date), year, month, day,
                 DateTime.now().plusYears(1).getMillis(), onDateSetListener);
     }
 
+    public void showBirthDatePicker(final String title, final int year, final int month,
+                                    final int day,
+                                    final android.app.DatePickerDialog.OnDateSetListener onDateSetListener) {
+        showDatePicker(title, year, month, day, DateTime.now().getMillis(), onDateSetListener);
+    }
+
     public void showBirthDatePicker(final int year, final int month, final int day,
-                                    final DatePickerDialog.OnDateSetListener onDateSetListener) {
+                                    final android.app.DatePickerDialog.OnDateSetListener onDateSetListener) {
         showDatePicker(context.getString(R.string.check_date), year, month, day,
                 DateTime.now().getMillis(), onDateSetListener);
     }
 
 
-    public void showCalendarPicker(final AlertDialogCallback<DateTime> callback) {
-        new MaterialDialog.Builder(context)
-                .customView(R.layout.dialog_calendar, false)
-                .positiveText("Ok")
-                .negativeText("Отмена")
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        if (callback != null) {
-                            callback.onNegative();//todo return date
-                        }
-                    }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void showCalendarPicker(@NonNull FragmentManager fm,
+                                   boolean showYearPickerFirst,
+                                   boolean dismissOnPause,
+                                   @NonNull final AlertDialogCallback<DateTime> callback) {
 
+        final Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onNeutral(MaterialDialog dialog) {
-                        if (callback != null) {
-                            callback.onNeutral();//todo return date
-                        }
-                    }
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        DateTime dateTime = new DateTime(year, monthOfYear, dayOfMonth, 0, 0);
+                        callback.onPick(dateTime);
 
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        if (callback != null) {
-                            callback.onPositive();//todo return date
-                        }
                     }
-                }).show();
+                },
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.showYearPickerFirst(showYearPickerFirst);
+        dpd.dismissOnPause(dismissOnPause);
+
+        dpd.show(fm, TAG_CALENDAR_DIALOG);
     }
 
     public void showMessageEditor(String message, final AlertDialogCallback<String> callback) {

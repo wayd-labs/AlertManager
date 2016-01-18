@@ -20,7 +20,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -36,12 +36,9 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.2@aar') {
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
         transitive = true
     }
-    compile 'com.github.e16din:LightUtils:1.1.5'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.6'
+    compile 'com.github.e16din:LightUtils:1.2.0'
+    compile 'com.wdullaer:materialdatetimepicker:2.1.1'
 }
