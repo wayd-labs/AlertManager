@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -210,8 +211,27 @@ public class AlertManager {
         }
     }
 
+
+
+    public void showAlertYesNo(@StringRes int message,
+                               @NonNull final DialogInterface.OnClickListener yesListener) {
+        showAlertYesNo(context.getString(message), yesListener, null);
+    }
+
     public void showAlertYesNo(final String message,
                                @NonNull final DialogInterface.OnClickListener yesListener) {
+        showAlertYesNo(message, yesListener, null);
+    }
+
+    public void showAlertYesNo(int message,
+                               DialogInterface.OnClickListener yesListener,
+                               DialogInterface.OnClickListener noListener) {
+        showAlertYesNo(context.getString(message), yesListener, noListener);
+    }
+
+    public void showAlertYesNo(final String message,
+                               final DialogInterface.OnClickListener yesListener,
+                               final DialogInterface.OnClickListener noListener) {
         try {
             AlertDialogWrapper.Builder builder = createAlertBuilder();
 
@@ -225,12 +245,15 @@ public class AlertManager {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             displayedAlerts.remove(message);
-                            yesListener.onClick(dialog, which);
+                            if (yesListener != null)
+                                yesListener.onClick(dialog, which);
                         }
                     }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     displayedAlerts.remove(message);
+                    if (noListener != null)
+                        noListener.onClick(dialog, which);
                 }
             }).show();
             displayedAlerts.add(message);
